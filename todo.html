@@ -3,10 +3,31 @@
 <html>
 
 <head>
+
     <title>TodoList</title>
+    <meta charset="utf-8">
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/todo.js"></script>
+
 </head>
+
 <body>
 
+<h1>TodoList</h1>
 
+<ul id="todoLs"></ul>
+
+<input type="text" id="newTodoText">
+<input type="button" value="add Todo!" onclick="addTodo();">
+
+<br>
+<input type="button" value="remove completed Todo!" onclick="removeCheckedTodo();">
+
+<script type="text/javascript">
+
+  loadTodo();
+
+</script>
 
 </body>
