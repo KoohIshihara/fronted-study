@@ -176,7 +176,7 @@ function changeTodo(){
   // 変更するテキストを取得
   var afterText = prompt("変更内容を入力してー", beforeText);
 
-  if(afterText.length == 0){
+  if(!afterText) {
     alert("todoが入力されていません。");
     return;
   }
