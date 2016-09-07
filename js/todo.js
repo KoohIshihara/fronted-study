@@ -29,6 +29,8 @@ function addTodo() {
   var li = createTodoLi(text);
   $("#todoLs").append(li);
 
+  document.getElementById("newTodoText").value = "";
+
   // 今のtodoを保存
   saveTodo();
 
@@ -165,6 +167,11 @@ function changeTodo(){
 
   // 変更するテキストを取得
   var afterText = prompt("変更内容を入力してー", beforeText);
+
+  if(afterText.length == 0){
+    alert("todoが入力されてないよ！");
+    return;
+  }
 
   // データの変更と保存
   loadedLiInfo[ index ].text = afterText;
