@@ -74,9 +74,12 @@ function saveTodo(){
 
   // オブジェクトのプロパティにデータを格納
   var liInfo = {};
+  // li要素を全て取得
+  var todoLies= $("#todoLs li");
+
   for(var i=0; i < liCount; i++){
 
-    var li = $("#todoLs li:nth-child("+(i+1)+")");
+    var li = $(todoLies[i]);
     var text = li.find(".todo-text").text();
     var check = li.find("input").prop('checked');
     // フォーマットは{text: str, checked: bool}
@@ -128,9 +131,13 @@ function removeCheckedTodo(){
   // オブジェクトのプロパティにデータを格納
   var liInfo = {};
   var liInfoAddedCounter = 0;
+
+  // li要素を全て取得
+  var todoLies= $("#todoLs li");
+
   for(var i=0; i < liCount; i++){
 
-    var li = $("#todoLs li:nth-child("+(i+1)+")");
+    var li = $(todoLies[i]);
     var text = li.find(".todo-text").text();
     var check = li.find("input").prop('checked');
     // checkが付いていない時のみ追加
