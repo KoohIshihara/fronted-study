@@ -67,24 +67,21 @@ function createTodoLi( _text ){
 
 
 // ローカルストレージにtodoを保存する関数
-function saveTodo(){
-  
-  // 表示しているtodoのli数を取得
-  var liCount = $(".todo-li").length;
-
+function saveTodo() {
   // オブジェクトのプロパティにデータを格納
-  var liInfo = {};
+  var liInfo = [];
   // li要素を全て取得
-  var todoLies= $("#todoLs li");
+  var todoLies = $("#todoLs li");
 
-  for(var i=0; i < liCount; i++){
-
+  for(var i=0,len=todoLies.length; i<len; i++) {
     var li = $(todoLies[i]);
     var text = li.find(".todo-text").text();
     var check = li.find("input").prop('checked');
     // フォーマットは{text: str, checked: bool}
-    liInfo[i] = {text: text, checked: check};
-
+    liInfo.push({
+      text: text,
+      checked: check,
+    });
   }
 
   // JSONtoStr
