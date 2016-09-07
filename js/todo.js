@@ -29,6 +29,7 @@ function addTodo() {
   var li = createTodoLi(text);
   $("#todoLs").append(li);
 
+  // テキストボックスの中身を空にする。
   document.getElementById("newTodoText").value = "";
 
   // 今のtodoを保存
@@ -169,7 +170,7 @@ function changeTodo(){
   var afterText = prompt("変更内容を入力してー", beforeText);
 
   if(afterText.length == 0){
-    alert("todoが入力されてないよ！");
+    alert("todoが入力されていません。");
     return;
   }
 
