@@ -15,7 +15,6 @@ $(function() {
 
 // todoListを新規に追加する関数
 function addTodo() {
-  
   // テキストボックスの中身を取得
   var text = document.getElementById("newTodoText").value;
   
@@ -90,12 +89,10 @@ function saveTodo() {
 
   // str化したデータを保存
   localStorage.setItem('liInfo_str', liInfo_str);
-
 }
 
 // ローカルストレージの読み込みと反映
 function loadTodo(){
-
   // todoLsの中を空にする
   $("#todoLs").empty();
 
@@ -104,61 +101,36 @@ function loadTodo(){
   var loadedLiInfo = JSON.parse(loadedLiInfo_str);
 
   // todoリストの数を取得
-  var counter = 0;
-  for (var j in loadedLiInfo) {
-      counter++;
-  }
+  var counter = loadedLiInfo.length;
 
   // todoリストを要素化して全て追加する
   for(var i=0; i<counter ;i++){
-
-    var li = createTodoLi(loadedLiInfo[i].text);
-    li.find("input").prop("checked", loadedLiInfo[i].checked);
+    var li = createTodoLi(loadedLiInfo[i].text, loadedLiInfo[i].checked);
     $("#todoLs").append(li);
-
   }
-
 }
 
 // チェックのついたtodoを削除する
 function removeCheckedTodo(){
-
-  // 表示しているtodoのli数を取得
-  var liCount = $(".todo-li").length;
-
-  // オブジェクトのプロパティにデータを格納
-  var liInfo = {};
-  var liInfoAddedCounter = 0;
-
   // li要素を全て取得
-  var todoLies= $("#todoLs li");
+  var todoLies = $("#todoLs li");
 
-  for(var i=0; i < liCount; i++){
-
+  for(var i=0,len=todoLies.length; i<len; i++) {
     var li = $(todoLies[i]);
-    var text = li.find(".todo-text").text();
     var check = li.find("input").prop('checked');
-    // checkが付いていない時のみ追加
-    if( check == false ){
-      liInfo[ liInfoAddedCounter ] = {text: text, checked: check};
-      liInfoAddedCounter++;
+    // check が付いていた場合は削除
+    if(check === true) {
+      li.remove();
     }
-
   }
 
-  // JSONtoStr
-  var liInfo_str = JSON.stringify(liInfo);
-  // str化したデータを保存
-  localStorage.setItem('liInfo_str', liInfo_str);
-
-  loadTodo();
-
+  // データを保存
+  saveTodo();
 }
 
 
 // 選択したTodoの中身を変更する関数
 function changeTodo(){
-
   // 変更したいliを取得
   var changeLi = $(this).parent();
   // 変更が何番目のデータか
@@ -187,8 +159,6 @@ function changeTodo(){
   localStorage.setItem('liInfo_str', liInfo_str);
   // viewへの反映
   loadTodo();
-    
-
 }
 
 
