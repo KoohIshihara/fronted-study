@@ -36,8 +36,8 @@ function addTodo() {
 
 
 //こいつを作成する関数
-//<li class='todo-li'><input type='checkbox' onchenge="saveTodo();"><span class='todo-text'>text</span></li>
-function createTodoLi(_text){
+//<li class='todo-li'><input type='checkbox' onchenge="saveTodo();"><span class='todo-text'>text</span><input type="button" value="change" onclick="changeTodo();"></li>
+function createTodoLi( _text ){
 
   var li = $("<li></li>");
   li.addClass("todo-li");
@@ -51,6 +51,12 @@ function createTodoLi(_text){
   span.addClass("todo-text");
   span.append(_text);
   li.append(span);
+
+  var input = $("<input>");
+  input.attr('type', 'button');
+  input.attr('value', 'change');
+  input.on('click',changeTodo);
+  li.append(input);
 
   return li;
 
@@ -126,7 +132,7 @@ function removeCheckedTodo(){
     var check = li.find("input").prop('checked');
     // checkが付いていない時のみ追加
     if( check == false ){
-      liInfo[liInfoAddedCounter] = {text: text, checked: check};
+      liInfo[ liInfoAddedCounter ] = {text: text, checked: check};
       liInfoAddedCounter++;
     }
 
@@ -138,6 +144,37 @@ function removeCheckedTodo(){
   localStorage.setItem('liInfo_str', liInfo_str);
 
   loadTodo();
+
+}
+
+
+// 選択したTodoの中身を変更する関数
+function changeTodo(){
+
+  // 変更したいliを取得
+  var changeLi = $(this).parent();
+  // 変更が何番目のデータか
+  var index = $('.todo-li').index(changeLi);
+  
+  // 読み込みと文字列toJSON
+  var loadedLiInfo_str = localStorage.getItem('liInfo_str');
+  var loadedLiInfo = JSON.parse(loadedLiInfo_str);
+
+  // 変更前のテキスト
+  var beforeText = loadedLiInfo[ index ].text;
+
+  // 変更するテキストを取得
+  var afterText = prompt("変更内容を入力してー", beforeText);
+
+  // データの変更と保存
+  loadedLiInfo[ index ].text = afterText;
+  // JSONtoStr
+  var liInfo_str = JSON.stringify( loadedLiInfo );
+  // str化したデータを保存
+  localStorage.setItem('liInfo_str', liInfo_str);
+  // viewへの反映
+  loadTodo();
+    
 
 }
 
