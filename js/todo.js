@@ -26,7 +26,7 @@ function addTodo() {
   }
 
   // ToDoのli要素を作成して追加
-  var li = createTodoLi(text);
+  var li = createTodoLi(text, false);
   $("#todoLs").append(li);
 
   // テキストボックスの中身を空にする。
@@ -40,7 +40,7 @@ function addTodo() {
 
 //こいつを作成する関数
 //<li class='todo-li'><input type='checkbox' onchenge="saveTodo();"><span class='todo-text'>text</span><input type="button" value="change" onclick="changeTodo();"></li>
-function createTodoLi( _text ){
+function createTodoLi(text, checked) {
 
   var li = $("<li></li>");
   li.addClass("todo-li");
@@ -48,17 +48,18 @@ function createTodoLi( _text ){
   var input = $("<input>");
   input.attr('type', 'checkbox');
   input.change(saveTodo);
+  input.prop('checked', checked);
   li.append(input);
 
   var span = $("<span></span>");
   span.addClass("todo-text");
-  span.append(_text);
+  span.append(text);
   li.append(span);
 
   var input = $("<input>");
   input.attr('type', 'button');
   input.attr('value', 'change');
-  input.on('click',changeTodo);
+  input.on('click', changeTodo);
   li.append(input);
 
   return li;
