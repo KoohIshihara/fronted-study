@@ -1,0 +1,41 @@
+<!doctype html>
+ 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.18/riot+compiler.js'></script>
+    
+    <style>${style}</style>
+  </head>
+  <body>
+    <!-- ユーザー定義のタグをここに展開 -->
+    <app title='Hello, Riot.js'></app>
+
+    <!-- app タグを定義 -->
+    <script type='riot/tag'>  
+      <app>
+        <h1>expressions</h1>
+        <ul>
+          <li>{ name }</li>
+          <li>{ title || "タイトルないよー" }</li>
+          <li>{ flag ? 'ready' : 'loading' }</li>
+          <li>{ new Date() }</li>
+          <li>{ Math.round(64.5) }</li>
+        </ul>
+    
+        this.name = 'phi';
+        this.flag = false;
+      </app>
+    </script>
+
+    <script>
+      // マウント
+      riot.mount('*');
+    </script>
+  </body>
+</html>
