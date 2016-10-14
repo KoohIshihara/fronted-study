@@ -18,50 +18,46 @@ app
   h1 { todoH }
   
   input(type = "text", id = "todoText")
-  input(type = "button", value = "addTodo", onclick = "addTodo();")
+  input(type = "button", value = "addTodo", onclick = "{addTodo}")
   br
-  input(type = "button", value = "Remove completed todo!!", onclick = "removeTodo();")
+  input(type = "button", value = "Remove completed todo!!", onclick = "{removeTodo}")
 
 
   ul.todoLists
-    li.list(each="{ list }")
-      input(type = "checkbox", onchange = "checkedTodo();", checked = "{ done }")
+    li.list(each="{ todoList }")
+      input(type = "checkbox", onchange = "{checkedTodo}", checked = "{ done }")
       span { title }
       input(type = "button", value = "edit", onclick = "{ editTodo }")
 
 
   script.
-    this.todoH = "todo";
-
-    var todoList = loadTodo();
-
     // todoを読み込む
-    function loadTodo(){
-
+    this.on('mount', function() {
       // 読み込みとstr to JSON
       var todoList_str = localStorage.getItem('todoList_str');
 
-      if( todoList_str ){
-       var todoList_JSON = JSON.parse(todoList_str);
-       return todoList_JSON;
-      }else{
-        return [];
+      if( todoList_str ) {
+        var todoList_JSON = JSON.parse(todoList_str);
+        this.todoList = todoList_JSON;
+      } else{
+        this.todoList = [];
       }
 
-    }
+      this.update();
+    });
 
     // todoListを保存
-    function saveTodo(){
+    this.saveTodo = function(){
 
-     // JSONtoStr
-      var todoList_str = JSON.stringify( todoList );
+      // JSONtoStr
+      var todoList_str = JSON.stringify( this.todoList );
       // str化したデータを保存
       localStorage.setItem('todoList_str', todoList_str);
 
     }
 
     // todoリストを追加する関数
-    function addTodo(){
+    this.addTodo = function(){
 
       // テキストを取得
       var newTodoText = document.getElementById("todoText").value;
@@ -74,23 +70,19 @@ app
 
       // テキストに基づいてsavedTodoに追加するオブジェクトをつくる。
       var newTodo = new Object();
-      newTodo.index = todoList.length;
+      newTodo.index = this.todoList.length;
       newTodo.title = newTodoText;
       newTodo.done = false;
       // savedTodoに追加
-      var todoCount = todoList.length;
-      todoList[ todoCount ] = newTodo; 
-      // 反映させる。
-      this.list = todoList;
+      var todoCount = this.todoList.length;
+      this.todoList[ todoCount ] = newTodo; 
       // 保存する。
-      saveTodo();
-
-      riot.mount('*');
+      this.saveTodo();
 
     }
 
     // todoのチェックが変更された時
-    function checkedTodo(){
+    this.checkedTodo = function() {
 
      // li要素を全て取得
       var lists = $('.todoLists li');
@@ -103,52 +95,45 @@ app
        var input = li.find('input');
         // チェックがついている時
        if( input.prop('checked') ){
-          todoList[i].done = true;
+          this.todoList[i].done = true;
        }else{
-          todoList[i].done = false;
+          this.todoList[i].done = false;
         }
 
      }
 
-     saveTodo();
+     this.saveTodo();
   
     }
 
     // todoを削除
-    function removeTodo(){
+    this.removeTodo = function(){
 
       // 更新する新しい配列を宣言
       var newTodoList = [];
    
       // todoListの配列の長さだけループさせる 
-      Object.keys(todoList).forEach(function(key) {
-
+      Object.keys(this.todoList).forEach(function(key) {
         // チェックがついていないもののみ追加していく
-       if( !(todoList[key].done) ){
-         // indexの上毛き
-          todoList[key].index = newTodoList.length;
-          newTodoList[ newTodoList.length ] = todoList[key];
+        if( !(this.todoList[key].done) ){
+         // indexの上書き
+          this.todoList[key].index = newTodoList.length;
+          newTodoList[ newTodoList.length ] = this.todoList[key];
         }
-
-      });
+      }.bind(this));
 
       // 新しいtodoListをセーブする
-      todoList = newTodoList;
-      saveTodo();
-
-      // 展開する
-      this.list = todoList;
-      riot.mount('*');
-
+      this.todoList = newTodoList;
+      this.saveTodo();
     }
 
 
     this.editTodo = function(e){
 
-     var editingIndex = e.item.index;
+      var editingIndex = e.item.index;
 
       // 変更前のテキスト
-      var beforeText = todoList[ editingIndex ].title;
+      var beforeText = this.todoList[ editingIndex ].title;
 
       // 変更するテキストを取得
       var afterText = prompt("変更内容を入力してー", beforeText);
@@ -158,20 +143,10 @@ app
         return;
       }
 
-      todoList[ editingIndex ].title = afterText;
+      this.todoList[ editingIndex ].title = afterText;
 
-      saveTodo();
-  
-      this.list = todoList;
-      riot.mount('*');
-
-    }
-
-
-    this.list = todoList;
-
-    riot.mount('*');
-
+      this.saveTodo();
+    };
 
 
 </script>
@@ -180,148 +155,6 @@ app
 <script>
 
   
+riot.mount('*');
 
-  /*
-  this.todoH = "todo";
-
-  var todoList = loadTodo();
-
-  // todoを読み込む
-  function loadTodo(){
-
-     // 読み込みとstr to JSON
-      var todoList_str = localStorage.getItem('todoList_str');
-
-      if( todoList_str ){
-       var todoList_JSON = JSON.parse(todoList_str);
-       return todoList_JSON;
-      }else{
-        return [];
-      }
-
-    }
-
-    // todoListを保存
-    function saveTodo(){
-
-     // JSONtoStr
-      var todoList_str = JSON.stringify( todoList );
-      // str化したデータを保存
-      localStorage.setItem('todoList_str', todoList_str);
-
-    }
-
-    // todoリストを追加する関数
-    function addTodo(){
-
-      // テキストを取得
-      var newTodoText = document.getElementById("todoText").value;
-
-      // テキストが空の場合、リターンする。
-      if( newTodoText == "" ){
-        alert('テキストを入力してください。');
-        return;
-      }
-
-      // テキストに基づいてsavedTodoに追加するオブジェクトをつくる。
-      var newTodo = new Object();
-      newTodo.index = todoList.length;
-      newTodo.title = newTodoText;
-      newTodo.done = false;
-      // savedTodoに追加
-      var todoCount = todoList.length;
-      todoList[ todoCount ] = newTodo; 
-      // 反映させる。
-      this.list = todoList;
-      // 保存する。
-      saveTodo();
-
-      riot.mount('*');
-
-    }
-
-    // todoのチェックが変更された時
-    function checkedTodo(){
-
-     // li要素を全て取得
-      var lists = $('.todoLists li');
-
-      // リストの数ループ
-      for(var i = 0; i < lists.length; i++){
-
-       // 直下のinput要素をliから取得
-       var li = $(lists[i]);
-       var input = li.find('input');
-        // チェックがついている時
-       if( input.prop('checked') ){
-          todoList[i].done = true;
-       }else{
-          todoList[i].done = false;
-        }
-
-     }
-
-     saveTodo();
-  
-    }
-
-    // todoを削除
-    function removeTodo(){
-
-        // 更新する新しい配列を宣言
-        var newTodoList = [];
-   
-       // todoListの配列の長さだけループさせる 
-       Object.keys(todoList).forEach(function(key) {
-
-           // チェックがついていないもののみ追加していく
-         if( !(todoList[key].done) ){
-           // indexの上毛き
-            todoList[key].index = newTodoList.length;
-            newTodoList[ newTodoList.length ] = todoList[key];
-          }
-
-        });
-
-        // 新しいtodoListをセーブする
-        todoList = newTodoList;
-        saveTodo();
-
-        // 展開する
-        this.list = todoList;
-        riot.mount('*');
-
-    }
-
-
-    this.editTodo = function(e){
-
-     var editingIndex = e.item.index;
-
-      // 変更前のテキスト
-      var beforeText = todoList[ editingIndex ].title;
-
-      // 変更するテキストを取得
-      var afterText = prompt("変更内容を入力してー", beforeText);
-
-      if( afterText.length == 0 ){
-        alert("変更内容を入力してください。");
-        return;
-      }
-
-      todoList[ editingIndex ].title = afterText;
-
-      saveTodo();
-  
-      this.list = todoList;
-      riot.mount('*');
-
-    }
-
-
-    this.list = todoList;
-
-    // 展開する。
-    riot.mount('*');
-    */
 </script>
